@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#0B0F19" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>AmorBridge | Live Bilingual Video Call & Real-time Translation</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="app" class="app-container">
+    
+    <!-- LOBBY SCREEN -->
+    <div id="lobbyScreen" class="screen lobby-screen">
+      <div class="lobby-card glass-panel">
+        <header class="lobby-header">
+          <div class="brand-badge">
+            <span class="badge-dot"></span>
+            <span>WebRTC + Live Translation</span>
+          </div>
+          <h1 class="brand-title">Amor<span class="gradient-text">Bridge</span></h1>
+          <p class="brand-subtitle">Real-time bilingual video calls with instant translated subtitles</p>
+        </header>
+
+        <!-- Preview & Device Test -->
+        <div class="preview-container">
+          <video id="lobbyPreview" autoplay playsinline muted></video>
+          <div class="preview-overlay">
+            <div id="lobbyAudioMeter" class="audio-meter">
+              <span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span>
+            </div>
+            <div class="preview-badges">
+              <span id="previewCamStatus" class="tag">Camera On</span>
+              <span id="previewMicStatus" class="tag">Mic Ready</span>
+            </div>
+          </div>
+          <button id="toggleLobbyCam" class="preview-btn" title="Toggle Camera">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+          </button>
+          <button id="toggleLobbyMic" class="preview-btn" title="Toggle Mic">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+          </button>
+        </div>
+
+        <!-- Call Setup Form -->
+        <div class="lobby-form">
+          <div class="form-row">
+            <div class="form-group flex-1">
+              <label for="userName">Your Name</label>
+              <div class="input-wrapper">
+                <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                <input type="text" id="userName" placeholder="e.g. Daniel" value="You" />
+              </div>
+            </div>
+            <div class="form-group flex-1">
+              <label for="roomInput">Room Name / ID</label>
+              <div class="input-wrapper">
+                <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                <input type="text" id="roomInput" placeholder="room-code" />
+                <button type="button" id="btnGenRoom" class="btn-inside-input" title="Generate Random Room">🎲</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Language Configuration -->
+          <div class="language-setup-box">
+            <div class="lang-selector-col">
+              <label>I Speak</label>
+              <div class="select-wrapper">
+                <select id="mySpokenLang">
+                  <option value="en" selected>🇺🇸 English</option>
+                  <option value="es">🇲🇽 Spanish (Latinoamérica)</option>
+                  <option value="es-ES">🇪🇸 Spanish (España)</option>
+                  <option value="pt">🇧🇷 Portuguese</option>
+                  <option value="fr">🇫🇷 French</option>
+                  <option value="it">🇮🇹 Italian</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="lang-arrow">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </div>
+
+            <div class="lang-selector-col">
+              <label>Translate Partner To</label>
+              <div class="select-wrapper">
+                <select id="partnerTranslateLang">
+                  <option value="es" selected>🇲🇽 Spanish</option>
+                  <option value="en">🇺🇸 English</option>
+                  <option value="pt">🇧🇷 Portuguese</option>
+                  <option value="fr">🇫🇷 French</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="helper-info-pill">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+            <span>Subtitles are generated in real-time as both of you speak!</span>
+          </div>
+
+          <button id="btnJoinRoom" class="btn-primary-action">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            <span>Start / Join Call</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- IN-CALL SCREEN -->
+    <div id="callScreen" class="screen call-screen hidden">
+      <!-- Call Header Bar -->
+      <header class="call-top-bar glass-bar">
+        <div class="call-brand">
+          <span class="pulsing-live-dot"></span>
+          <span class="call-title">AmorBridge</span>
+        </div>
+        
+        <div class="call-badges">
+          <button id="btnCopyInvite" class="badge-btn" title="Copy Invite Link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            <span id="roomCodeDisplay">Room: ---</span>
+          </button>
+          <div id="connectionStatus" class="status-chip connecting">Connecting...</div>
+        </div>
+
+        <button id="btnToggleSettings" class="icon-circle-btn" title="Settings">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        </button>
+      </header>
+
+      <!-- Video Call Grid / Fullscreen Area -->
+      <main class="video-stage">
+        <!-- Remote Partner Video (Takes Full Screen) -->
+        <div id="remoteVideoWrapper" class="remote-video-container">
+          <video id="remoteVideo" autoplay playsinline></video>
+          
+          <!-- Waiting placeholder when partner hasn't joined -->
+          <div id="remotePlaceholder" class="remote-placeholder">
+            <div class="placeholder-avatar">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </div>
+            <h3 id="remoteStatusTitle">Waiting for partner to join...</h3>
+            <p>Send the invite link to your girlfriend so she can connect!</p>
+            <button id="btnCopyInviteHero" class="btn-secondary">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+              <span>Copy Invite Link</span>
+            </button>
+          </div>
+
+          <div class="peer-label" id="remotePeerLabel">Partner</div>
+        </div>
+
+        <!-- Floating Picture-in-Picture Local Selfie Video -->
+        <div id="localPipContainer" class="local-pip-container">
+          <video id="localVideo" autoplay playsinline muted></video>
+          <div class="local-pip-badge">
+            <span class="user-initial">You</span>
+            <div id="localMicIndicator" class="pip-mic-dot"></div>
+          </div>
+          <button id="btnFlipPip" class="pip-control-btn" title="Flip Self-View">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+          </button>
+        </div>
+
+        <!-- LIVE SUBTITLE DISPLAY OVERLAY -->
+        <div id="subtitlesOverlay" class="subtitles-overlay">
+          <!-- Active Remote Partner Subtitle Box -->
+          <div id="remoteCaptionBox" class="caption-card remote-caption hidden">
+            <div class="caption-speaker-tag">
+              <span id="remoteFlag">🇲🇽</span>
+              <span id="remoteCaptionSpeaker">Partner</span>
+              <span class="live-tag">LIVE</span>
+            </div>
+            <div class="caption-body">
+              <div id="remoteTranslatedText" class="caption-translated">"..."</div>
+              <div id="remoteOriginalText" class="caption-original">Original text</div>
+            </div>
+          </div>
+
+          <!-- Active Local User Subtitle Box (What you are saying) -->
+          <div id="localCaptionBox" class="caption-card local-caption hidden">
+            <div class="caption-speaker-tag">
+              <span id="localFlag">🇺🇸</span>
+              <span>You (Speaking)</span>
+              <div class="wave-dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+            </div>
+            <div class="caption-body">
+              <div id="localOriginalText" class="caption-original">Listening...</div>
+              <div id="localTranslatedText" class="caption-translated">Translation sent to partner...</div>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <!-- Bottom Floating Control Bar -->
+      <footer class="call-bottom-bar glass-bar">
+        <button id="btnToggleMic" class="call-action-btn" title="Mute/Unmute Mic">
+          <svg class="icon-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+          <svg class="icon-off hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="1" y1="1" x2="23" y2="23"/><path d="M9 9v3a3 3 0 0 0 5.12 2.12M15 9.34V4a3 3 0 0 0-5.94-.6"/><path d="M17 16.95A7 7 0 0 1 5 12v-2m14 0v2a7 7 0 0 1-.11 1.23"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+        </button>
+
+        <button id="btnToggleCam" class="call-action-btn" title="Camera On/Off">
+          <svg class="icon-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+          <svg class="icon-off hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="1" y1="1" x2="23" y2="23"/><path d="M21 21l-3.6-2.4L23 15V7l-7 5V7a2 2 0 0 0-2-2H8.8"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+        </button>
+
+        <button id="btnSwitchCamera" class="call-action-btn" title="Flip Camera (Front/Back)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+        </button>
+
+        <button id="btnToggleCaptions" class="call-action-btn active-state" title="Toggle Live Subtitles">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M7 15h3M7 11h5M14 15h3M14 11h3"/></svg>
+          <span class="btn-micro-badge">CC</span>
+        </button>
+
+        <button id="btnEndCall" class="call-action-btn danger-btn" title="Leave Call">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 9c-1.6 0-3.15.25-4.6.72v3.1c0 .39-.23.74-.56.9-.98.49-1.87 1.12-2.66 1.85-.18.18-.43.28-.7.28-.28 0-.53-.11-.71-.29L.29 13.08a.996.996 0 0 1 0-1.41C3.28 8.78 7.37 7 12 7c4.63 0 8.72 1.78 11.71 4.67.39.39.39 1.02 0 1.41l-2.48 2.48c-.18.18-.43.29-.71.29-.27 0-.52-.1-.7-.28-.79-.74-1.69-1.36-2.67-1.85-.33-.16-.56-.5-.56-.9v-3.1C15.15 9.25 13.6 9 12 9z"/></svg>
+        </button>
+      </footer>
+    </div>
+
+    <!-- SETTINGS MODAL / SLIDE-OVER -->
+    <div id="settingsModal" class="modal-backdrop hidden">
+      <div class="modal-card glass-panel">
+        <div class="modal-header">
+          <h3>Call & Subtitle Settings</h3>
+          <button id="btnCloseSettings" class="close-btn">&times;</button>
+        </div>
+        
+        <div class="modal-body">
+          <div class="setting-item">
+            <label>My Spoken Language</label>
+            <select id="settingMyLang">
+              <option value="en">🇺🇸 English</option>
+              <option value="es">🇲🇽 Spanish (Latinoamérica)</option>
+              <option value="es-ES">🇪🇸 Spanish (España)</option>
+              <option value="pt">🇧🇷 Portuguese</option>
+              <option value="fr">🇫🇷 French</option>
+            </select>
+          </div>
+
+          <div class="setting-item">
+            <label>Target Translation Language</label>
+            <select id="settingTargetLang">
+              <option value="es">🇲🇽 Spanish</option>
+              <option value="en">🇺🇸 English</option>
+              <option value="pt">🇧🇷 Portuguese</option>
+              <option value="fr">🇫🇷 French</option>
+            </select>
+          </div>
+
+          <div class="setting-item">
+            <label>Subtitle Display Mode</label>
+            <select id="settingSubtitleMode">
+              <option value="both" selected>Dual (Translated + Original)</option>
+              <option value="translated-only">Translated Only</option>
+              <option value="original-only">Original Only</option>
+            </select>
+          </div>
+
+          <div class="setting-item">
+            <label>Subtitle Font Size</label>
+            <select id="settingSubtitleSize">
+              <option value="font-normal">Standard</option>
+              <option value="font-large" selected>Large (Recommended for mobile)</option>
+              <option value="font-xl">Extra Large</option>
+            </select>
+          </div>
+
+          <div class="setting-item">
+            <label>Speak Translation Aloud (Text-to-Speech)</label>
+            <div class="toggle-switch">
+              <input type="checkbox" id="settingTTS" />
+              <label for="settingTTS" class="slider"></label>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button id="btnSaveSettings" class="btn-primary-action">Apply</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION CONTAINER -->
+    <div id="toastContainer" class="toast-container"></div>
+
+  </div>
+
+  <!-- Socket.io client script -->
+  <script src="/socket.io/socket.io.js"></script>
+  <!-- Main Application Script -->
+  <script type="module" src="app.js"></script>
+</body>
+</html>
