@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">AmorBridge</string>
+    <string name="channel_name">Incoming Video Calls</string>
+    <string name="channel_description">High priority notification for incoming video calls</string>
+</resources>
